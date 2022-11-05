@@ -7,7 +7,7 @@ size = 10000
 list = [1] * size
 ar = array.array('b', [1] * size)
 ndar = np.array(list)
-st = ''.join(['a'] * 10000)
+st = ''.join(['a'] * 1000000)
 
 
 def stop_watch(job, tag):
