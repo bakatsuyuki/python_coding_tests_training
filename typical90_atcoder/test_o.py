@@ -19,7 +19,7 @@ def stop_watch(job, tag):
     print(end_at - start_at)
 
 
-stop_watch(lambda: list[50], 'list')
-stop_watch(lambda: ar[50], 'array')
-stop_watch(lambda: ndar[50], 'ndarray')
-stop_watch(lambda: st[50], 'string')
+stop_watch(lambda: list[:30], 'list')
+stop_watch(lambda: ar[:30], 'array')
+stop_watch(lambda: ndar[:30], 'ndarray')
+stop_watch(lambda: st[:30], 'string')
