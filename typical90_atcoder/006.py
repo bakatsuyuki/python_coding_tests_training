@@ -1,7 +1,6 @@
 import array
 import sys
 
-# sys.stdin = open('typical90_f_in_13_random_max_02.txt')
 n, k = map(int, sys.stdin.readline().rstrip().split())
 s = sys.stdin.readline().rstrip()
 
