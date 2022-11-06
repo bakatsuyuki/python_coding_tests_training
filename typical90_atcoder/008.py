@@ -1,40 +1,55 @@
+from copy import deepcopy
+
+import numpy as np
+
 n = int(input())
 s = input()
 
 mod = 10 ** 9 + 7
 
-before_indexes = None
-count = 1
-all_index_maps = []
-
 target_chars = 'atcoder'
 
-s = ''.join([x for i, x in enumerate(s) if x in target_chars])
-result_memo = {}
-first_indexes = {}
-last_indexes = {}
-for char in target_chars:
-    first_indexes[char] = s.index(char)
-    last_indexes[char] = len(s) - 1 - list(reversed(target_chars)).index(char)
+indexes = [[i for i, x in enumerate(s) if x == target_chars[index]] for index in range(len(target_chars))]
 
 
-def count_alphabet_after_index(target_char_index, index):
-    key = f'{target_char_index}-{index}'
-    if target_char_index >= len(target_chars):
-        return 1
-    target_char = target_chars[target_char_index]
-    if last_indexes[target_char] < index:
-        return 0
-    if key in result_memo:
-        return result_memo[key]
-    found_indexes = [i for i, x in enumerate(s[index:]) if x == target_char]
-    result = 0
-    for found_index in found_indexes:
-        new_index = max([first_indexes[target_char], found_index + index + 1])
-        result += count_alphabet_after_index(target_char_index + 1, new_index)
-    result %= mod
-    result_memo[key] = result
-    return result
+def remove_errors_from_indexes(indexes):
+    has_changed = False
+    copied_indexes = deepcopy(indexes)
+    for i in range(len(target_chars)):
+        for j in range(len(indexes[i])):
+            index = indexes[i][j]
+            if i < len(indexes) - 1 and index > max(indexes[i + 1]):
+                has_changed = True
+                print('削除1')
+                print(f'i: {i}')
+                print(index)
+                print(indexes[i + 1])
+                del (copied_indexes[i][j])
+            elif i > 0 and index < min(indexes[i - 1]):
+                has_changed = True
+                print('削除2')
+                print(f'i: {i}')
+                print(index)
+                print(indexes[i - 1])
+                # コピーしてるからindexずれてる
+                # それのせいでバグってる
+                del (copied_indexes[i][j])
+    if has_changed:
+        return remove_errors_from_indexes(copied_indexes)
+    else:
+        return copied_indexes
 
 
-print(count_alphabet_after_index(0, 0))
+indexes = remove_errors_from_indexes(indexes)
+
+dp = np.array([[0] * n] * len(target_chars))
+
+for i in range(len(indexes)):
+    for j in indexes[i]:
+        if i == 0:
+            dp[i][j:] += 1
+        elif dp[i - 1][j] != 0:
+            dp[i][j:] = (dp[i][j:] + dp[i - 1][j:]) % mod
+
+print(dp)
+print(dp[len(target_chars) - 1][n - 1])
