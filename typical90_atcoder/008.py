@@ -11,8 +11,10 @@ target_chars = list('atcoder')
 
 result_memo = {}
 
+first_indexes = {}
+for char in target_chars:
+    first_indexes[char] = s.index(char)
 
-# [i for i, x in enumerate(s) if x == target_char]
 
 def count_alphabet_after_index(target_char_index, index):
     key = f'{target_char_index}-{index}'
@@ -22,11 +24,11 @@ def count_alphabet_after_index(target_char_index, index):
         return 1
 
     target_char = target_chars[target_char_index]
-
     found_indexes = [i for i, x in enumerate(s[index:]) if x == target_char]
     result = 0
     for found_index in found_indexes:
-        result += count_alphabet_after_index(target_char_index + 1, found_index + index + 1)
+        new_index = max([first_indexes[target_char], found_index + index + 1])
+        result += count_alphabet_after_index(target_char_index + 1, new_index)
     result %= mod
     result_memo[key] = result
     return result
