@@ -21,26 +21,24 @@ def dijkstra(start_at):
     settled_indexes.append(start_at)
     index = start_at
     while len(settled_indexes) < n:
-        min_new_cost = inf
-        min_new_index = None
         for destination in load_map[index]:
             if destination in settled_indexes:
                 continue
             cost = load_map[index][destination]
             costs[destination] = min(costs[destination], costs[index] + cost)
-            if costs[destination] < min_new_cost:
-                min_new_cost = costs[destination]
-                min_new_index = destination
-        settled_indexes.append(min_new_index)
-        index = min_new_index
+        min_cost = inf
+        min_index = None
+        for i, cost in [[i, cost] for i, cost in enumerate(costs) if i not in settled_indexes]:
+            if cost < min_cost:
+                min_index = i
+                min_cost = cost
+        settled_indexes.append(min_index)
+        index = min_index
     return costs
 
 
-dijkstra_all = dijkstra(1)
+dijkstra_forward = dijkstra(1)
 dijkstra_reverse = dijkstra(n)
 
-print(dijkstra_all)
-print(dijkstra_reverse)
-
 for i in range(1, n + 1):
-    print(dijkstra_all[i] + dijkstra_reverse[i])
+    print(dijkstra_forward[i] + dijkstra_reverse[i])
