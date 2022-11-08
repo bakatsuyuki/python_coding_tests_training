@@ -7,31 +7,37 @@ class Solution:
     def longestAwesome(self, s: str) -> int:
         all_numbers_counts = [0] * 10
         len_s = len(s)
-        dp = np.zeros((len_s, 10), dtype=int)
+        s_int = list(map(int, list(s)))
+        dp = np.zeros((len_s, 10), dtype=bool)
         min_result = 0
         for i in range(len_s):
-            s_child = int(s[i])
+            s_child = s_int[i]
             all_numbers_counts[s_child] += 1
             if i > 0:
                 dp[i] = dp[i - 1]
-            dp[i][s_child] += 1
+            dp[i][s_child] = not dp[i][s_child]
             if self.oddCount(dp[i]) < 2:
                 min_result = i + 1
         for i in range(len_s):
             if len_s - i - 1 < min_result:
                 break
-            j = len_s - 1
-            while j - i >= min_result:
-                odd_count = self.oddCount(dp[j] - dp[i])
+            current_dp = dp[len_s - 1] != dp[i]
+            odd_count = self.oddCount(current_dp)
+            for j in reversed(range(i + min_result, len_s)):
                 if odd_count < 2:
                     min_result = j - i
                     break
+
+                if current_dp[s_int[j]]:
+                    odd_count -= 1
                 else:
-                    j -= odd_count - 1
+                    odd_count += 1
+                current_dp[s_int[j]] = not current_dp[s_int[j]]
+
         return min_result
 
     def oddCount(self, occurrences):
-        return np.count_nonzero(occurrences % 2)
+        return np.count_nonzero(occurrences)
 
 
 print(Solution().longestAwesome(
