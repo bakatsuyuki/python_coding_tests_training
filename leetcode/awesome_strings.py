@@ -1,7 +1,9 @@
 import numpy as np
+from line_profiler_pycharm import profile
 
 
 class Solution:
+    @profile
     def longestAwesome(self, s: str) -> int:
         all_numbers_counts = [0] * 10
         len_s = len(s)
@@ -13,24 +15,23 @@ class Solution:
             if i > 0:
                 dp[i] = dp[i - 1]
             dp[i][s_child] += 1
-            if self.isAwesome(dp[i]):
+            if self.oddCount(dp[i]) < 2:
                 min_result = i + 1
-        if min_result == len_s:
-            return min_result
         for i in range(len_s):
             if len_s - i - 1 < min_result:
-                continue
-            for j in reversed(range(i, len_s)):
-                sum_value = j - i
-                if sum_value < min_result:
-                    continue
-                target = dp[j] - dp[i]
-                if self.isAwesome(target):
-                    min_result = sum_value
+                break
+            j = len_s - 1
+            while j - i >= min_result:
+                odd_count = self.oddCount(dp[j] - dp[i])
+                if odd_count < 2:
+                    min_result = j - i
+                    break
+                else:
+                    j -= odd_count - 1
         return min_result
 
-    def isAwesome(self, occurrences):
-        return np.count_nonzero((occurrences % 2)) < 2
+    def oddCount(self, occurrences):
+        return np.count_nonzero(occurrences % 2)
 
 
 print(Solution().longestAwesome(
