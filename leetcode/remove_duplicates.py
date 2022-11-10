@@ -27,11 +27,12 @@ class Node:
 class Solution:
     @profile
     def removeDuplicates(self, s: str) -> str:
-        root = Node('')
-        last_node = root
-        for s_child in list(s):
-            last_node = last_node.combine(Node(s_child))
-        return root.get_text()
+        for index in reversed(range(len(s) - 1)):
+            if index >= len(s) - 1:
+                continue
+            if s[index] == s[index + 1]:
+                s = s[0: index] + s[index + 2:]
+        return s
 
     @profile
     def removeDuplicatesOld(self, s: str) -> str:
