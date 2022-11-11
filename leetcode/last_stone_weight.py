@@ -4,20 +4,19 @@ from line_profiler_pycharm import profile
 
 
 class Solution:
-    def __init__(self):
-        self.target_weight = None
-        self.stones = None
-        self.len_stones = None
-
     @profile
     def lastStoneWeightII(self, stones: List[int]) -> int:
         stones.sort()
-        self.len_stones = len(stones)
-        self.stones = stones
         sum_stones = sum(stones)
-        self.target_weight = sum_stones // 2
-        group1_weight = self.get_weight(0, 0)
-        return abs((sum_stones - group1_weight) - group1_weight)
+        target_weight = sum_stones // 2
+        dp = [[0] * (target_weight + 1) for _ in range(len(stones) + 1)]
+        for i in range(1, len(stones) + 1):
+            stone = stones[i - 1]
+            dp[i][0:stone] = dp[i - 1][0:stone]
+            for j in range(stone, target_weight + 1):
+                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - stone] + stone)
+
+        return abs((sum_stones - dp[-1][-1]) - dp[-1][-1])
 
     @profile
     def get_weight(self, currentWeight, index):
@@ -33,8 +32,6 @@ class Solution:
         )
 
 
-print(Solution().lastStoneWeightII([89, 23, 100, 93, 82, 98, 91, 85, 33, 95, 72, 98, 63, 46, 17, 91, 92, 72, 77]))
-print(Solution().lastStoneWeightII([31, 26, 33, 21, 40]))
-# print(Solution().lastStoneWeightII(
-#    [89, 23, 100, 93, 82, 98, 91, 85, 33, 95, 72, 98, 63, 46, 17, 91, 92, 72, 77, 79, 99, 96, 55, 72, 24, 98, 79, 93,
-#     88, 92]))
+for _ in range(100):
+    print(Solution().lastStoneWeightII([89, 23, 100, 93, 82, 98, 91, 85, 33, 95, 72, 98, 63, 46, 17, 91, 92, 72, 77]))
+    print(Solution().lastStoneWeightII([31, 26, 33, 21, 40]))
