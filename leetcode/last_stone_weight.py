@@ -1,42 +1,40 @@
-import heapq
 from typing import List
 
-
-class ReverseHeap:
-    max_value = 1000
-
-    def __init__(self, data):
-        reversed_list = list(map(self.get_reversed_value, data))
-        heapq.heapify(reversed_list)
-        self.data = reversed_list
-
-    def pop(self):
-        return self.max_value - heapq.heappop(self.data)
-
-    def push(self, new_value):
-        heapq.heappush(self.data, self.get_reversed_value(new_value))
-
-    def get_reversed_value(self, value):
-        return self.max_value - value
-
-    def count(self):
-        return len(self.data)
+from line_profiler_pycharm import profile
 
 
 class Solution:
+    def __init__(self):
+        self.target_weight = None
+        self.stones = None
+        self.len_stones = None
+
+    @profile
     def lastStoneWeightII(self, stones: List[int]) -> int:
-        reverse_heap = ReverseHeap(stones)
-        while reverse_heap.count() > 1:
-            value1 = reverse_heap.pop()
-            value2 = reverse_heap.pop()
-            print(value1, value2)
-            new_value = value1 - value2
-            if new_value != 0:
-                reverse_heap.push(new_value)
+        stones.sort()
+        self.len_stones = len(stones)
+        self.stones = stones
+        sum_stones = sum(stones)
+        self.target_weight = sum_stones // 2
+        group1_weight = self.get_weight(0, 0)
+        return abs((sum_stones - group1_weight) - group1_weight)
 
-        if reverse_heap.count() == 0:
-            return 0
-        return reverse_heap.pop()
+    @profile
+    def get_weight(self, currentWeight, index):
+        if index >= self.len_stones:
+            return currentWeight
+        current_stone = self.stones[index]
+        if current_stone + currentWeight > self.target_weight:
+            return currentWeight
+        new_index = index + 1
+        return max(
+            self.get_weight(currentWeight + current_stone, new_index),
+            self.get_weight(currentWeight, new_index),
+        )
 
 
+print(Solution().lastStoneWeightII([89, 23, 100, 93, 82, 98, 91, 85, 33, 95, 72, 98, 63, 46, 17, 91, 92, 72, 77]))
 print(Solution().lastStoneWeightII([31, 26, 33, 21, 40]))
+# print(Solution().lastStoneWeightII(
+#    [89, 23, 100, 93, 82, 98, 91, 85, 33, 95, 72, 98, 63, 46, 17, 91, 92, 72, 77, 79, 99, 96, 55, 72, 24, 98, 79, 93,
+#     88, 92]))
