@@ -1,31 +1,40 @@
-from collections import deque
-
 n = int(input())
 ab = [list(map(int, input().split())) for _ in range(n)]
-ladder_map = {}
 
+
+class UnionFind:
+    def __init__(self):
+        self.parents = {}
+
+    def union(self, node1, node2):
+        root1 = self.find(node1)
+        root2 = self.find(node2)
+        self.parents[root1] = root2
+        print(self.parents)
+
+    def find(self, node):
+        if node not in self.parents or node == self.parents[node]:
+            self.parents[node] = node
+            return node
+        else:
+            parent_node = self.parents[node]
+            root_node = self.find(parent_node)
+            self.parents[node] = root_node
+            return root_node
+
+    def group(self, node):
+        root = self.find(node)
+        result = []
+        for key in self.parents:
+            if root == self.find(key):
+                result.append(key)
+        return result
+
+
+uf = UnionFind()
+
+floor_map = {}
 for a, b in ab:
-    if a not in ladder_map:
-        ladder_map[a] = []
-    if b not in ladder_map:
-        ladder_map[b] = []
-    ladder_map[a].append(b)
-    ladder_map[b].append(a)
+    uf.union(a, b)
 
-reachable_floor_set = set()
-
-que = deque([])
-
-que.append(1)
-if 1 not in ladder_map:
-    print(1)
-    exit()
-
-while que:
-    floor = que.pop()
-    reachable_floor_set.add(floor)
-    for next_floor in ladder_map[floor]:
-        if next_floor not in reachable_floor_set and next_floor not in que:
-            que.append(next_floor)
-
-print(max(reachable_floor_set))
+print(max(uf.group(1)))
