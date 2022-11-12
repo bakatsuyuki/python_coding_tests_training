@@ -1,0 +1,1 @@
+{"profiledFunctions": [{"file": "/Users/bakatsuyuki/PycharmProjects/pythonProject1/atcoder/dp/f.py", "lineNo": 4, "functionName": "solve", "profiledLines": [{"lineNo": 6, "hits": 1, "time": 7}, {"lineNo": 8, "hits": 1, "time": 8}, {"lineNo": 9, "hits": 1, "time": 1}]}], "unit": 1e-06}
