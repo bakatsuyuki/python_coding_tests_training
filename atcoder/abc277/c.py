@@ -10,7 +10,6 @@ class UnionFind:
         root1 = self.find(node1)
         root2 = self.find(node2)
         self.parents[root1] = root2
-        print(self.parents)
 
     def find(self, node):
         if node not in self.parents or node == self.parents[node]:
@@ -24,11 +23,7 @@ class UnionFind:
 
     def group(self, node):
         root = self.find(node)
-        result = []
-        for key in self.parents:
-            if root == self.find(key):
-                result.append(key)
-        return result
+        return [key for i, key in enumerate(self.parents) if self.find(self.parents[key]) == root]
 
 
 uf = UnionFind()
