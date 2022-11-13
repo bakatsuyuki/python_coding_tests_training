@@ -1,7 +1,7 @@
 import sys
 
-sys.setrecursionlimit(500000)
 n, m = map(int, input().split())
+sys.setrecursionlimit(n * 3)
 xy = [list(map(int, input().split())) for _ in range(m)]
 
 edge_map = {}
@@ -22,12 +22,10 @@ memo = {}
 
 
 def solve(end_point):
-    if end_point in memo:
-        return memo[end_point]
     if end_point not in edge_map:
         result = 0
     else:
-        result = max(list(map(solve, edge_map[end_point]))) + 1
+        result = max(list(map(lambda x: solve(x) if x not in memo else memo[x], edge_map[end_point]))) + 1
     memo[end_point] = result
     return result
 
