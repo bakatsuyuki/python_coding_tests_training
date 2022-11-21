@@ -1,6 +1,9 @@
+import sys
+
 from line_profiler_pycharm import profile
 
 n = int(input())
+sys.setrecursionlimit(n * 10)
 a = list(map(int, input().split()))
 sushi_count = sum(a)
 
@@ -17,8 +20,6 @@ def solve(c1, c2, c3):
     if dp[c1][c2][c3] is not None:
         return dp[c1][c2][c3]
 
-    c0 = n - c1 - c2 - c3
-    p0 = c0 / n
     denominator = 1
     if c1 > 0:
         denominator += solve(c1 - 1, c2, c3) * c1 / n
@@ -26,6 +27,8 @@ def solve(c1, c2, c3):
         denominator += solve(c1 + 1, c2 - 1, c3) * c2 / n
     if c3 > 0:
         denominator += solve(c1, c2 + 1, c3 - 1) * c3 / n
+    c0 = n - c1 - c2 - c3
+    p0 = c0 / n
     result = denominator / (1 - p0)
     dp[c1][c2][c3] = result
     return result
